@@ -18,6 +18,7 @@ def generate_coloring_image(prompt):
     response = requests.post(url, json=data, headers=headers)
     prediction = response.json()
     get_url = prediction["urls"]["get"]
+
     while True:
         result = requests.get(get_url, headers=headers).json()
         if result["status"] == "succeeded":
