@@ -102,9 +102,13 @@ async def webhook():
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(telegram_app.bot.delete_webhook(drop_pending_updates=True))
-    if RENDER_EXTERNAL_URL:
-        webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
-        asyncio.run(telegram_app.bot.set_webhook(url=webhook_url))
+
+    async def setup_and_run():
+        await telegram_app.bot.delete_webhook(drop_pending_updates=True)
+        if RENDER_EXTERNAL_URL:
+            webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
+            await telegram_app.bot.set_webhook(url=webhook_url)
+
+    asyncio.run(setup_and_run())
     port = int(os.environ.get("PORT", 8080))
     flask_app.run(host="0.0.0.0", port=port)
