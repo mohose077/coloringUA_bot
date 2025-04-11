@@ -96,15 +96,17 @@ def home():
 
 @flask_app.route('/webhook', methods=['POST'])
 def webhook():
-    from asyncio import run
+    from asyncio import get_event_loop
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    run(telegram_app.process_update(update))
+    loop = get_event_loop()
+    loop.create_task(telegram_app.process_update(update))
     return 'OK', 200
 
 if __name__ == "__main__":
     import asyncio
 
     async def setup_and_run():
+        await telegram_app.initialize()
         await telegram_app.bot.delete_webhook(drop_pending_updates=True)
         if RENDER_EXTERNAL_URL:
             webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
