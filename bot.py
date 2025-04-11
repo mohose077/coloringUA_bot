@@ -90,7 +90,8 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
 
 # Обробники
 telegram_app.add_handler(CommandHandler("start", start))
-te...
+telegram_app.add_handler(MessageHandler(filters.Regex("^(2-3 роки|4 роки|5 років|6 років)$"), handle_age))
+telegram_app.add_handler(MessageHandler(filters.Regex("^(Дісней|Тварини|Машинки|Динозаври|Казкові|Їжа)$"), handle_topic))
 telegram_app.add_handler(MessageHandler(filters.Regex("^(1|3|5|10)$"), handle_amount))
 telegram_app.add_handler(MessageHandler(filters.Regex("^(A4|A5)$"), handle_format))
 telegram_app.add_handler(CallbackQueryHandler(handle_rating))
