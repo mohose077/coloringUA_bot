@@ -82,13 +82,19 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
     action, image_url = query.data.split("|")
     await query.edit_message_caption(caption=f"{query.message.caption}\n\n✅ Ви оцінили: {'👍' if action == 'like' else '👎'}")
 
+# Обробка помилок
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
+    logger.error(msg="🚨 Виникла помилка під час обробки оновлення:", exc_info=context.error)
+    if update and hasattr(update, "message") and update.message:
+        await update.message.reply_text("⚠️ Вибач, сталася помилка. Ми вже працюємо над цим!")
+
 # Обробники
 telegram_app.add_handler(CommandHandler("start", start))
-telegram_app.add_handler(MessageHandler(filters.Regex("^(2-3 роки|4 роки|5 років|6 років)$"), handle_age))
-telegram_app.add_handler(MessageHandler(filters.Regex("^(Дісней|Тварини|Машинки|Динозаври|Казкові|Їжа)$"), handle_topic))
+te...
 telegram_app.add_handler(MessageHandler(filters.Regex("^(1|3|5|10)$"), handle_amount))
 telegram_app.add_handler(MessageHandler(filters.Regex("^(A4|A5)$"), handle_format))
 telegram_app.add_handler(CallbackQueryHandler(handle_rating))
+telegram_app.add_error_handler(error_handler)
 
 # Flask маршрут
 @flask_app.route('/')
