@@ -1,6 +1,7 @@
 # bot.py
 import os
 import logging
+import asyncio
 from flask import Flask, request
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -96,15 +97,11 @@ def home():
 
 @flask_app.route('/webhook', methods=['POST'])
 def webhook():
-    from asyncio import get_event_loop
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    loop = get_event_loop()
-    loop.create_task(telegram_app.process_update(update))
+    asyncio.create_task(telegram_app.process_update(update))
     return 'OK', 200
 
 if __name__ == "__main__":
-    import asyncio
-
     async def setup_and_run():
         await telegram_app.initialize()
         await telegram_app.bot.delete_webhook(drop_pending_updates=True)
