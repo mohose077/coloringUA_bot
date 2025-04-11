@@ -11,7 +11,7 @@ from config import TELEGRAM_BOT_TOKEN, RENDER_EXTERNAL_URL
 from generator import generate_coloring_image
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("bot")
 
 flask_app = Flask(__name__)
 telegram_app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
@@ -98,7 +98,7 @@ def home():
 @flask_app.route('/webhook', methods=['POST'])
 def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    asyncio.create_task(telegram_app.process_update(update))
+    asyncio.run(telegram_app.process_update(update))
     return 'OK', 200
 
 if __name__ == "__main__":
